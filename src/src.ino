@@ -1,97 +1,223 @@
-int CKI = 49; // Blue wire - clock - Left side of SR04-1
-int SDI = 22; // Green wire - data - Other data pin of SR04-1
-int ledPin = LED_BUILTIN; // On board LED
+#include <FastLED.h>
+#define NUM_LEDS 78 
+#define NUM_CHASE 10
+#define NUM_DANCES 8
+int green[NUM_CHASE];
 
-// #define STRIP_LENGTH 79 // Number of LEDs on the strip (I think? .-.)
-#define STRIP_LENGTH 5 // Number of LEDs on the strip (I think? .-.)
-long strip_colors[STRIP_LENGTH];
+CRGB leds[NUM_LEDS];
+volatile int dance = 0;
+volatile int count = 0;
 
-void setup() {
-  pinMode(SDI, OUTPUT);
-  pinMode(CKI, OUTPUT);
-  pinMode(ledPin, OUTPUT);
+void setup()
+{
+  pinMode(35, OUTPUT);
+  pinMode(32, OUTPUT);
+  pinMode(2, INPUT);
   
-  //Clear out the array
-  for(int x = 0 ; x < STRIP_LENGTH ; x++)
-    strip_colors[x] = 0;
-    
-  randomSeed(analogRead(0));
+  //randomSeed(analogRead(A0));
+  //dance = random(NUM_DANCES);
   
-  //Serial.begin(9600);
-  //Serial.println("Hello!");
+  //This is the chipset in the AM-2640 LED strip using the default Data/CLK pins
+   FastLED.addLeds<WS2801, 35, 32, RGB>(leds, NUM_LEDS);
+   for (int i = 0; i < NUM_CHASE; i++)
+   {
+     green[i] = NUM_LEDS/NUM_CHASE*i;
+   }
+   
+   //attachInterrupt(0, nextDance, RISING);
 }
 
-void loop() {
-  //Pre-fill the color array with known values
-  strip_colors[0] = 0xFF0000; //Bright Red
-  strip_colors[1] = 0x00FF00; //Bright Green
-  strip_colors[2] = 0x0000FF; //Bright Blue
-  strip_colors[3] = 0x010000; //Faint red
-  strip_colors[4] = 0x800000; //1/2 red (0x80 = 128 out of 256)
-  post_frame(); //Push the current color frame to the strip
-  while(1);
-//  
-//  delay(2000);
-//
-//  while(1){ //Do nothing
-//    addRandom();
-//    post_frame(); //Push the current color frame to the strip
-//
-//    digitalWrite(ledPin, HIGH);   // set the LED on
-//    delay(250);                  // wait for a second
-//    digitalWrite(ledPin, LOW);    // set the LED off
-//    delay(250);                  // wait for a second
-//  }
+void loop()
+{
+  allGreen();
+  
+  FastLED.show();
 }
 
-//Throws random colors down the strip array
-void addRandom(void) {
-  int x;
+void allRed()
+{  
+  /*if(count == 0) {
+    for (int i = 0; i < NUM_LEDS; i++) {
+      leds[i].setRGB((int)random(256),(int)random(256),(int)random(256));
+    }
+  }
+  else
+  {*/
+    for (int i = 0; i < NUM_LEDS; i++) {
+      leds[i].setRGB(255,0,0);
+    } 
+  //}
   
-  //First, shuffle all the current colors down one spot on the strip
-  for(x = (STRIP_LENGTH - 1) ; x > 0 ; x--)
-    strip_colors[x] = strip_colors[x - 1];
-    
-  //Now form a new RGB color
-  long new_color = 0;
-  for(x = 0 ; x < 3 ; x++){
-    new_color <<= 8;
-    new_color |= random(0xFF); //Give me a number from 0 to 0xFF
-    //new_color &= 0xFFFFF0; //Force the random number to just the upper brightness levels. It sort of works.
+  delay(60);
+  //count = (count + 1) % 2;
+}
+
+void allGreen()
+{  
+  for (int i = 0; i < NUM_LEDS; i++) {
+      leds[i].setRGB(0,255,0);
+  } 
+  
+  delay(60);
+}
+
+void greenScroll()
+{
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i].setRGB(50,0,0);
   }
   
-  strip_colors[0] = new_color; //Add the new random color to the strip
+  for (int i = 0; i < NUM_CHASE; i++)
+  {
+    green[i] = (NUM_LEDS / NUM_CHASE * i + count) % NUM_LEDS;
+    leds[green[i]].setRGB(0,50,0);
+  }
+  
+  count = (count + 1) % NUM_LEDS;
+  delay(60);  
 }
 
-//Takes the current strip color array and pushes it out
-void post_frame (void) {
-  //Each LED requires 24 bits of data
-  //MSB: R7, R6, R5..., G7, G6..., B7, B6... B0 
-  //Once the 24 bits have been delivered, the IC immediately relays these bits to its neighbor
-  //Pulling the clock low for 500us or more causes the IC to post the data.
+void rainbow()
+{
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i].setHSV((int)((256.0/(NUM_LEDS-1))*((i+count)%NUM_LEDS)),255,150);
+  }
+  count = (count + 1) % NUM_LEDS;
+  delay(60);
+}
 
-  for(int LED_number = 0 ; LED_number < STRIP_LENGTH ; LED_number++) {
-    long this_led_color = strip_colors[LED_number]; //24 bits of color data
-
-    for(byte color_bit = 23 ; color_bit != 255 ; color_bit--) {
-      //Feed color bit 23 first (red data MSB)
-      
-      digitalWrite(CKI, LOW); //Only change data when clock is low
-      
-      long mask = 1L << color_bit;
-      //The 1'L' forces the 1 to start as a 32 bit number, otherwise it defaults to 16-bit.
-      
-      if(this_led_color & mask) 
-        digitalWrite(SDI, HIGH);
-      else
-        digitalWrite(SDI, LOW);
+void countBar()
+{
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i].setRGB(255,255,255);
+  }
   
-      digitalWrite(CKI, HIGH); //Data is latched when clock goes high
+  if (count < NUM_LEDS)
+  {
+    for (int i = 0; i < count; i++)
+    {
+      leds[i].setRGB(0,0,255); 
+    }
+  }
+  else
+  {
+    for (int i = 0; i < 2 * NUM_LEDS - count; i++)
+    {
+      leds[i].setRGB(0,0,255); 
     }
   }
 
-  //Pull clock low to put strip into reset/post mode
-  digitalWrite(CKI, LOW);
-  delayMicroseconds(500); //Wait for 500us to go into reset
+  count = (count + 1) % (2 * NUM_LEDS - 1);
+  delay(30);  
+}
+
+void tyson()
+{
+   for (int i = 0; i < NUM_LEDS; i++) {
+    if (count == 0) {
+     leds[i].setRGB(255,0,0);
+    }
+    else if (count == 1) {
+     leds[i].setRGB(0,0,255);
+    }
+    else if (count == 2) {
+     leds[i].setRGB(255,0,255);
+    }
+  }
+  
+  count = (count + 1) % 3;
+  delay(500);
+}
+
+void dillon()
+{
+  for (int i = 0; i < NUM_LEDS/3; i++) {
+    leds[(i+count)%NUM_LEDS].setRGB(255,255,0);
+  }
+  for (int i = NUM_LEDS/3; i < 2*NUM_LEDS/3; i++) {
+    leds[(i+count)%NUM_LEDS].setRGB(0,100,0);
+  }
+  for (int i = 2*NUM_LEDS/3; i < NUM_LEDS; i++) {
+    leds[(i+count)%NUM_LEDS].setRGB(0,0,100);
+  }
+  
+  count = (count + 1) % NUM_LEDS;
+  delay(30);
+}
+
+void alexis()
+{
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i].setRGB(0,0,0);
+  }
+  if (count < NUM_LEDS/2) {
+    for (int i = 0; i < NUM_LEDS/2-count; i++) {
+      leds[i].setRGB(255,0,255);
+    }
+    for (int i = NUM_LEDS/2+count; i < NUM_LEDS; i++) {
+      leds[i].setRGB(0,0,100);
+    }
+  }
+  else {
+    for (int i = 0; i < count-NUM_LEDS/2; i++) {
+      leds[i].setRGB(255,0,255);
+    }
+    for (int i = 3*NUM_LEDS/2-count; i < NUM_LEDS; i++) {
+      leds[i].setRGB(0,0,100);
+    }
+  }
+  
+  count = (count + 1) % NUM_LEDS;
+  delay(15);  
+}
+
+void scrollIn() {
+  int space = 8;
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i].setRGB(0,0,0);
+  }
+  for (int i = count; i < NUM_LEDS/2; i += space) {
+    leds[i].setRGB(0,0,255);
+  }
+  for (int i = NUM_LEDS-count; i > NUM_LEDS/2; i -= space) {
+    leds[i].setRGB(0,0,255);
+  }
+  count = (count + 1) % space;
+  delay(80);
+}
+
+void scrollOut() {
+  int space = 8;
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i].setRGB(0,0,0);
+  }
+  for (int i = count; i < NUM_LEDS/2; i += space) {
+    leds[i].setRGB(0,0,255);
+  }
+  for (int i = NUM_LEDS-count; i > NUM_LEDS/2; i -= space) {
+    leds[i].setRGB(0,0,255);
+  }
+  count = (count - 1 + space) % space;
+  delay(80);
+}
+void halfScrollIn() {
+  int space = 4;
+  for (int i = 0; i < NUM_LEDS; i++) {
+    leds[i].setRGB(0,0,0);
+  }
+  for (int i = count; i < NUM_LEDS/4; i += space) {
+    leds[i].setRGB(55,55,0);
+  }
+  for (int i = NUM_LEDS/2-count; i > NUM_LEDS/4; i -= space) {
+    leds[i].setRGB(55,55,0);
+  }
+  for (int i = NUM_LEDS/2 + count; i < 3*NUM_LEDS/4; i += space) {
+    leds[i].setRGB(55,55,0);
+  }
+  for (int i = NUM_LEDS - count; i > 3*NUM_LEDS/4; i -= space) {
+    leds[i].setRGB(55,55,0);
+  }
+  count = (count + 1) % space;
+  delay(80);
 }
 
