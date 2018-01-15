@@ -12,11 +12,24 @@
 #define green 0x006600
 #define yellow 0x666600
 
+#define numarrays 5
+
+int pattern[numarrays];
+int startled[numarrays];
+int endled[numarrays];
+int scrollIncr[numarrays];
+
 Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BGR);
 
-int scrollIncr = 0;
+//int scrollIncr = 0;
 
 void setup() {
+  for (int i = 0; i < numarrays; i++) {
+    pattern[i] = 0; 
+    startled[i] = 0; 
+    endled[i] = 0; 
+    scrollIncr[i] = 0; 
+  }
   strip.begin(); 
   strip.show();
 }
@@ -26,10 +39,11 @@ void loop() {
   //policeFlash(red, blue, 10);
   //solid(green);
   //aze();
+  colorScroll(red, white, blue, 5, 100, false, 50, 100);
 }
 
 void aze() {
-  policeFlash(blue, yellow, 15);
+  twoColorScroll(blue, yellow, 10, 50, false);
 }
 
 void solid(uint32_t color) {
@@ -84,14 +98,14 @@ void alternate2Colors(uint32_t stage1Color1, uint32_t stage1Color2, uint32_t sta
   }
 }
 
-void twoColorScroll(uint32_t firstColor, uint32_t secondColor, int len, int scrollTime, bool comeIn) {
+void twoColorScroll(uint32_t firstColor, uint32_t secondColor, int len, int scrollTime, bool comeIn, int startLED, int endLED) {
   if (scrollIncr >= (len * 2)) {
     scrollIncr = 0;
   }
   if (scrollIncr <= 0) {
     scrollIncr = (len * 2) - 1;
   }
-  for (int led = 0; led < NUMPIXELS; led++) {
+  for (int led = startLED; led < endLED; led++) {
     int offsetLED = (led + scrollIncr) % (len * 2);
     if (offsetLED > 0 && offsetLED < (len + 1)) {
       strip.setPixelColor(led, firstColor);
@@ -104,14 +118,14 @@ void twoColorScroll(uint32_t firstColor, uint32_t secondColor, int len, int scro
   scrollIncr += comeIn ? 1 : -1;
 }
 
-void fourColorScroll(uint32_t firstColor, uint32_t secondColor, uint32_t thirdColor, uint32_t fourthColor, int len, int scrollTime, bool comeIn) {
+void fourColorScroll(uint32_t firstColor, uint32_t secondColor, uint32_t thirdColor, uint32_t fourthColor, int len, int scrollTime, bool comeIn, int startLED, int endLED) {
   if (scrollIncr >= (len * 4)) {
     scrollIncr = 0;
   }
   if (scrollIncr <= 0) {
     scrollIncr = (len * 4) - 1;
   }
-  for (int led = 0; led < NUMPIXELS; led++) {
+  for (int led = startLED; led < endLED; led++) {
     int offsetLED = (led + scrollIncr) % (len * 4);
     if (offsetLED > 0 && offsetLED < (len + 1)) {
       strip.setPixelColor(led, firstColor);
@@ -128,14 +142,14 @@ void fourColorScroll(uint32_t firstColor, uint32_t secondColor, uint32_t thirdCo
   scrollIncr += comeIn ? 1 : -1;
 }
 
-void colorScroll(uint32_t firstColor, uint32_t secondColor, uint32_t thirdColor, int len, int scrollTime, bool comeIn) {
+void colorScroll(uint32_t firstColor, uint32_t secondColor, uint32_t thirdColor, int len, int scrollTime, bool comeIn, int startLED, int endLED) {
   if (scrollIncr >= (len * 3)) {
     scrollIncr = 0;
   }
   if (scrollIncr <= 0) {
     scrollIncr = (len * 3) - 1;
   }
-  for (int led = 0; led < NUMPIXELS; led++) {
+  for (int led = startLED; led < endLED; led++) {
     int offsetLED = (led + scrollIncr) % (len * 3);
     if (offsetLED > 0 && offsetLED < (len + 1)) {
       strip.setPixelColor(led, firstColor);
