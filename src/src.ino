@@ -14,10 +14,36 @@
 
 #define numarrays 5
 
-int pattern[numarrays];
-int startled[numarrays];
-int endled[numarrays];
-int scrollIncr[numarrays];
+#define pBLACK 0
+#define pAZE 1
+#define pTwoColorScroll 2
+#define pThreeColorScroll 3
+#define pFourColorScroll 4
+#define pTwoColorScrollAlternating 5
+#define pThreeColorScrollAlternating 6
+#define pFourColorScrollAlternating 7
+
+struct ColorPallet {
+  int color1, color2, color3, color4;
+};
+
+class Pattern {
+  int patternID, start, last;
+  ColorPallet colors;
+  public:
+  Pattern(int, int, int, ColorPallet);
+  void setPixels();
+  void change(int, int, int);
+};
+
+Pattern::Pattern(int patternID2set, int start2set, int last2set, ColorPallet colors2set) {
+  patternID = patternID2set;
+  start = start2set;
+  last = last2set;
+  colors = colors2set;
+}
+
+Pattern patterns[numarrays];
 
 Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BGR);
 
@@ -25,7 +51,7 @@ Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_
 
 void setup() {
   for (int i = 0; i < numarrays; i++) {
-    pattern[i] = 0; 
+    pattern[i] = pAZE; 
     startled[i] = 0; 
     endled[i] = 0; 
     scrollIncr[i] = 0; 
@@ -35,13 +61,14 @@ void setup() {
 }
 
 void loop() {
-  //alternateColors(red, white, blue, red, white, yellow, 8, 25, false, 500);
-  //policeFlash(red, blue, 10);
-  //solid(green);
-  //aze();
-  colorScroll(red, white, blue, 5, 100, false, 50, 100);
+  for (int i = 0; i < numarrays; i++) {
+    switch (pattern[i]) {
+      default:
+       
+    }
+  }
 }
-
+/*
 void aze() {
   twoColorScroll(blue, yellow, 10, 50, false);
 }
@@ -163,4 +190,4 @@ void colorScroll(uint32_t firstColor, uint32_t secondColor, uint32_t thirdColor,
   delay(scrollTime);
   scrollIncr += comeIn ? 1 : -1;
 }
-
+*/
