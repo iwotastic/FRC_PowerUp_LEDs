@@ -1,7 +1,7 @@
 #ifndef PATTERN_H
 #define PATTERN_H
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include <Adafruit_DotStar.h>
 #include <SPI.h>
 
