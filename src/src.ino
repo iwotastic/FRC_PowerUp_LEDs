@@ -1,8 +1,5 @@
 #include "src.h"
-#include <Adafruit_DotStar.h>
-#include <SPI.h>
 
-#define numarrays 5
 
 Pattern patterns[numarrays];
 
