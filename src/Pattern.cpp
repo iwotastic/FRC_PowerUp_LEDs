@@ -22,14 +22,13 @@ void Pattern::setPixels() {
   switch (patternID) {
     case pAZE:
     for (int led = start; led < last; led++) {
-      int offsetLED = led - (millis() % 100L) / ((100.0 / segmentLength) * 2.0);
-//      strip.setPixelColor(led, off);
+      strip->setPixelColor(led, ((millis() / (10L * segmentLength * 2)) % (segmentLength * 2) >= segmentLength) ? 0x0000ff : 0xffff00);
     }
     break;
     
     default:
     for (int led = start; led < last; led++) {
-//      strip.setPixelColor(led, off);
+      strip->setPixelColor(led, 0);
     }
     break;
   }

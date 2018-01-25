@@ -14,12 +14,17 @@ void setup() {
   for (int i = 0; i < 5; i++) {
     patterns[i] = Pattern();
   }
+
+  patterns[0].setStrip(&strip);
+  patterns[0].setLocation(1, 31);
+  patterns[0].aze(4, true);
 }
 
 void loop() {
-//  for (int i = 0; i < numarrays; i++) {
-//    
-//  }
+  for (int i = 0; i < numarrays; i++) {
+    patterns[i].setPixels();
+  }
+  strip.show();
 }
 
 //void aze() {
