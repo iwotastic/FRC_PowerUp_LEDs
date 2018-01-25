@@ -1,28 +1,7 @@
-#include "Pattern.h"
-
-#include "Arduino.h"
+#include <Arduino.h>
 #include <Adafruit_DotStar.h>
 #include <SPI.h>
-
-////// COLORS //////
-
-#define red 0x660000
-#define white 0x666666
-#define blue 0x000066
-#define green 0x006600
-#define yellow 0x666600
-#define off 0
-
-// PATTERN CONSTANTS //
-
-#define pBLACK 0
-#define pAZE 1
-#define pTwoColorScroll 2
-#define pThreeColorScroll 3
-#define pFourColorScroll 4
-#define pTwoColorScrollAlternating 5
-#define pThreeColorScrollAlternating 6
-#define pFourColorScrollAlternating 7
+#include "Pattern.h"
 
 Pattern::Pattern() {
   patternID = pBLACK;
@@ -30,17 +9,13 @@ Pattern::Pattern() {
   last = 0;
   strip = NULL;
 }
-////
-//Pattern::Pattern() {
-//  patternID = pBLACK;
-//  start = 0;
-//  last = 0;
-////  strip = &theStrip;
-//}
 
-void Pattern::setStrip(Adafruit_Dotstar* newstrip){
+void Pattern::Test(){
+  while(1);
+}
 
-  strip = newstrip;
+void Pattern::setStrip(void* newstrip){
+  strip = (Adafruit_DotStar*)newstrip;
 }
 
 void Pattern::setPixels() {
