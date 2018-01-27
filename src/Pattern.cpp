@@ -19,6 +19,12 @@ void Pattern::setStrip(void* newstrip){
 }
 void Pattern::setPixels() {
   switch (patternID) {
+    case pTwoColorFlash:
+    for (int led = start; led < last; led++) {
+      strip->setPixelColor(led, (millis() % (patternSpeed * 2)) > patternSpeed ? color1 : color2);
+    }
+    break;
+    
     case pTwoColorScroll:
     for (int led = start; led < last; led++) {
       long tempDividend = long((led + long(millis() / 100) * (comeIn ? 1 : -1)) / segmentLength);
@@ -63,3 +69,11 @@ void Pattern::scroll(uint32_t newColor1, uint32_t newColor2, int newSegmentLengt
   comeIn = newComeIn;
   patternID = pTwoColorScroll;
 }
+
+void Pattern::flash(uint32_t newColor1, uint32_t newColor2, int newPatternSpeed) {
+  color1 = newColor1;
+  color2 = newColor2;
+  patternSpeed = newPatternSpeed;
+  patternID = pTwoColorFlash;
+}
+

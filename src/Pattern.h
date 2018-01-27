@@ -21,11 +21,7 @@
 #define pBLACK 0
 #define pAZE 1
 #define pTwoColorScroll 2
-#define pThreeColorScroll 3
-#define pFourColorScroll 4
-#define pTwoColorScrollAlternating 5
-#define pThreeColorScrollAlternating 6
-#define pFourColorScrollAlternating 7
+#define pTwoColorFlash 3
 
 
 class Pattern {
@@ -37,6 +33,9 @@ class Pattern {
     int patternID, start, last;
 
     Adafruit_DotStar *strip;
+
+    // Basic property for any timed functions
+    int patternSpeed;
 
     // Basic properties of scrolling functions
     int segmentLength, comeIn;
@@ -74,6 +73,10 @@ class Pattern {
 
     // Functions with customizable color scroling
     void scroll(uint32_t, uint32_t, int, bool);
+
+    // Flash pattern 
+    void flash(uint32_t, uint32_t, int);
+    
 };
 
 #endif

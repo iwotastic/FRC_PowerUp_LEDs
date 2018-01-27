@@ -27,7 +27,7 @@ void setup() {
   
   patterns[3].setStrip(&strip);
   patterns[3].setLocation(90, 99);
-  patterns[3].scroll(0xff0000, 0x000000, 1, false);
+  patterns[3].flash(0xff0000, 0x000000, 500);
 }
 
 void loop() {
