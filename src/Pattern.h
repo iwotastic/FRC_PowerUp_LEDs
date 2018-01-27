@@ -40,6 +40,9 @@ class Pattern {
 
     // Basic properties of scrolling functions
     int segmentLength, comeIn;
+
+    // Properties of customizeable color funtions
+    uint32_t color1, color2;
   
   public:
 
@@ -68,6 +71,9 @@ class Pattern {
   
     // Function to display AZE colors
     void aze(int, bool);
+
+    // Functions with customizable color scroling
+    void scroll(uint32_t, uint32_t, int, bool);
 };
 
 #endif

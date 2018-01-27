@@ -1,6 +1,5 @@
 #include "src.h"
 
-
 Pattern patterns[numarrays];
 
 Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BGR);
@@ -14,10 +13,21 @@ void setup() {
   for (int i = 0; i < 5; i++) {
     patterns[i] = Pattern();
   }
-
   patterns[0].setStrip(&strip);
-  patterns[0].setLocation(1, 31);
+  patterns[0].setLocation(0, 30);
   patterns[0].aze(4, true);
+
+  patterns[1].setStrip(&strip);
+  patterns[1].setLocation(30, 60);
+  patterns[1].scroll(0xff0000, 0x00ff00, 6, false);
+
+  patterns[2].setStrip(&strip);
+  patterns[2].setLocation(60, 90);
+  patterns[2].scroll(0xffffff, 0x000000, 10, true);
+  
+  patterns[3].setStrip(&strip);
+  patterns[3].setLocation(90, 99);
+  patterns[3].scroll(0xff0000, 0x000000, 1, false);
 }
 
 void loop() {

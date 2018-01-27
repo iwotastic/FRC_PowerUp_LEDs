@@ -17,12 +17,19 @@ void Pattern::Test(){
 void Pattern::setStrip(void* newstrip){
   strip = (Adafruit_DotStar*)newstrip;
 }
-
 void Pattern::setPixels() {
   switch (patternID) {
+    case pTwoColorScroll:
+    for (int led = start; led < last; led++) {
+      long tempDividend = long((led + long(millis() / 100) * (comeIn ? 1 : -1)) / segmentLength);
+      strip->setPixelColor(led, (tempDividend * (tempDividend < 0 ? -1 : 1)) % 2 == 1 ? color1 : color2);
+    }
+    break;
+    
     case pAZE:
     for (int led = start; led < last; led++) {
-      strip->setPixelColor(led, ((millis() / (10L * segmentLength * 2)) % (segmentLength * 2) >= segmentLength) ? 0x0000ff : 0xffff00);
+      long tempDividend = long((led + long(millis() / 100) * (comeIn ? 1 : -1)) / segmentLength);
+      strip->setPixelColor(led, (tempDividend * (tempDividend < 0 ? -1 : 1)) % 2 == 1 ? 0x0000ff : 0xffff00);
     }
     break;
     
@@ -43,7 +50,16 @@ void Pattern::goBlack() {
   patternID = pBLACK;
 }
 
-void Pattern::aze(int newSegmentLength, bool comeIn) {
+void Pattern::aze(int newSegmentLength, bool newComeIn) {
+  segmentLength = newSegmentLength;
+  comeIn = newComeIn;
   patternID = pAZE;
 }
 
+void Pattern::scroll(uint32_t newColor1, uint32_t newColor2, int newSegmentLength, bool newComeIn) {
+  color1 = newColor1;
+  color2 = newColor2;
+  segmentLength = newSegmentLength;
+  comeIn = newComeIn;
+  patternID = pTwoColorScroll;
+}
