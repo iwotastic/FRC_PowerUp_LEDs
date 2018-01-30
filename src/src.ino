@@ -1,5 +1,22 @@
 #include "src.h"
 
+#define TEST_MODE_ENABLED
+
+#ifdef TEST_MODE_ENABLED
+
+#define COM Serial
+#define SETUP begin(9600)
+#define COM_READ COM.parseInt()
+
+#else
+
+#include <Wire.h>
+#define COM Wire
+#define SETUP begin(5)
+#define COM_READ int(uint8_t(COM.read()))
+
+#endif
+
 Pattern patterns[numarrays];
 
 Adafruit_DotStar strip = Adafruit_DotStar(NUMPIXELS, DATAPIN, CLOCKPIN, DOTSTAR_BGR);
@@ -10,24 +27,26 @@ void setup() {
   strip.begin(); 
   strip.show();
 
+  COM.SETUP;
+
   for (int i = 0; i < 5; i++) {
     patterns[i] = Pattern();
   }
-  patterns[0].setStrip(&strip);
-  patterns[0].setLocation(0, 30);
-  patterns[0].aze(4, true);
-
-  patterns[1].setStrip(&strip);
-  patterns[1].setLocation(30, 60);
-  patterns[1].scroll(0xff0000, 0x00ff00, 6, false);
-
-  patterns[2].setStrip(&strip);
-  patterns[2].setLocation(60, 90);
-  patterns[2].scroll(0xffffff, 0x000000, 10, true);
-  
-  patterns[3].setStrip(&strip);
-  patterns[3].setLocation(90, 99);
-  patterns[3].flash(0xff0000, 0x000000, 500);
+//  patterns[0].setStrip(&strip);
+//  patterns[0].setLocation(0, 30);
+//  patterns[0].aze(4, true);
+//
+//  patterns[1].setStrip(&strip);
+//  patterns[1].setLocation(30, 60);
+//  patterns[1].scroll(0xff0000, 0x00ff00, 6, false);
+//
+//  patterns[2].setStrip(&strip);
+//  patterns[2].setLocation(60, 90);
+//  patterns[2].scroll(0xffffff, 0x000000, 10, true);
+//  
+//  patterns[3].setStrip(&strip);
+//  patterns[3].setLocation(90, 99);
+//  patterns[3].flash(0xff0000, 0x000000, 500);
 }
 
 void loop() {
@@ -35,6 +54,79 @@ void loop() {
     patterns[i].setPixels();
   }
   strip.show();
+  if (COM.available() > 0) {
+    int code = COM_READ;
+    switch (code) {
+      case 3:
+      patterns[0].setStrip(&strip);
+      patterns[0].setLocation(0, 100);
+      patterns[0].flash(0xffff00, 0x000000, 500);
+      patterns[1].setStrip(&strip);
+      patterns[1].setLocation(0, 0);
+      patterns[1].goBlack();
+      patterns[2].setStrip(&strip);
+      patterns[2].setLocation(0, 0);
+      patterns[2].goBlack();
+      patterns[3].setStrip(&strip);
+      patterns[3].setLocation(0, 0);
+      patterns[3].goBlack();
+      patterns[4].setStrip(&strip);
+      patterns[4].setLocation(0, 0);
+      patterns[4].goBlack();
+      break;
+      case 2:
+      patterns[0].setStrip(&strip);
+      patterns[0].setLocation(0, 100);
+      patterns[0].scroll(0xff8e00, 0x060300, 8, false);
+      patterns[1].setStrip(&strip);
+      patterns[1].setLocation(0, 0);
+      patterns[1].goBlack();
+      patterns[2].setStrip(&strip);
+      patterns[2].setLocation(0, 0);
+      patterns[2].goBlack();
+      patterns[3].setStrip(&strip);
+      patterns[3].setLocation(0, 0);
+      patterns[3].goBlack();
+      patterns[4].setStrip(&strip);
+      patterns[4].setLocation(0, 0);
+      patterns[4].goBlack();
+      break;
+      case 1:
+      patterns[0].setStrip(&strip);
+      patterns[0].setLocation(0, 100);
+      patterns[0].aze(4, false);
+      patterns[1].setStrip(&strip);
+      patterns[1].setLocation(0, 0);
+      patterns[1].goBlack();
+      patterns[2].setStrip(&strip);
+      patterns[2].setLocation(0, 0);
+      patterns[2].goBlack();
+      patterns[3].setStrip(&strip);
+      patterns[3].setLocation(0, 0);
+      patterns[3].goBlack();
+      patterns[4].setStrip(&strip);
+      patterns[4].setLocation(0, 0);
+      patterns[4].goBlack();
+      break;
+      default:
+      patterns[0].setStrip(&strip);
+      patterns[0].setLocation(0, 100);
+      patterns[0].goBlack();
+      patterns[1].setStrip(&strip);
+      patterns[1].setLocation(0, 0);
+      patterns[1].goBlack();
+      patterns[2].setStrip(&strip);
+      patterns[2].setLocation(0, 0);
+      patterns[2].goBlack();
+      patterns[3].setStrip(&strip);
+      patterns[3].setLocation(0, 0);
+      patterns[3].goBlack();
+      patterns[4].setStrip(&strip);
+      patterns[4].setLocation(0, 0);
+      patterns[4].goBlack();
+      break;
+    }
+  }
 }
 
 //void aze() {
