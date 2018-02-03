@@ -27,3 +27,9 @@ This will blink between yellow and red. This means a cube is being released.
 
 ### Code `7`
 This will scroll purple and orange reverse. This means we are lowering the elevator.
+
+### Code `8`
+This will scroll red. Autonomous is not doing anything worth color coding.
+
+### Code `9`
+This will scroll blue. Teleop is not doing anything worth color coding.
