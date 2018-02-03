@@ -11,7 +11,7 @@ This will completely **turn off** the lights.
 This will activate the AZE pattern. This will mean disabled.
 
 ### Code `2`
-This will scroll bright orange. This will mean enabled but inactive.
+This will scroll blue. Teleop is not doing anything worth color coding.
 
 ### Code `3`
 This will flash yellow on the elevator shaft and scroll yellow on sides. This will mean autonomous has found a cube.
@@ -30,6 +30,3 @@ This will scroll purple and orange reverse. This means we are lowering the eleva
 
 ### Code `8`
 This will scroll red. Autonomous is not doing anything worth color coding.
-
-### Code `9`
-This will scroll blue. Teleop is not doing anything worth color coding.
