@@ -23,19 +23,13 @@
 #define DATAPIN6 26
 #define CLOCKPIN6 27
 
-#define DATAPIN7 40
-#define CLOCKPIN7 41
-
-#define DATAPIN8 43
-#define CLOCKPIN8 42
-
 // INTERNAL INCLUDES //
 #include <Adafruit_DotStar.h>
 #include <SPI.h>
 #include "Pattern.h"
 
 // CONFIGURATION DEFINES //
-#define numarrays 8
+#define numarrays 6
 
 
 #endif
