@@ -1,3 +1,5 @@
+// Look up i2c available function
+
 //  LIGHTS ARE 48 LONG
 
 #include "src.h"
@@ -14,7 +16,7 @@
 
 #include <Wire.h>
 #define COM Wire
-#define SETUP begin(5)
+#define SETUP begin(8)
 #define COM_READ COM.read()
 
 #endif
@@ -45,6 +47,8 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
 
   COM.SETUP;
+
+  Serial.begin(9600);
 
   patterns[0].setStrip(&strip1);
   patterns[1].setStrip(&strip2);
@@ -77,7 +81,8 @@ void loop() {
   strip4.show();
   strip5.show();
   strip6.show();
-  if (COM.available() > 0) {
+  while (COM.available() > 0) {
+    Serial.println("I2C Avail.");
     int code = COM_READ;
     switch (code) {
       case 8:
